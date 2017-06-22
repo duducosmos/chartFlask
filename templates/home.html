@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+    google.charts.load("current", {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    var source = new EventSource("{{ url_for('mychart') }}")
+
+    var data;
+    var options;
+
+    source.addEventListener("in-progress", function(event){
+        var chart_data = event.data.split(",").map(Number);
+        data.addRow(chart_data);
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+
+    });
+
+
+    function drawChart(){
+
+        data = new google.visualization.DataTable();
+        data.addColumn('number', 'x');
+        data.addColumn('number', 'y');
+
+        options = {
+            title: "Teste",
+            curveType: 'function',
+            legend: {position: 'bottom'}
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+        chart.draw(data, options);
+
+    }
+
+    </script>
+
+</head>
+<body>
+    <div id='curve_chart'></div>
+</body>
+</html>
